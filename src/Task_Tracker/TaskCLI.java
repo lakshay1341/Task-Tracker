@@ -37,7 +37,10 @@ public class TaskCLI {
                         if (updateArgs.length < 2) {
                             System.out.println("Usage: update <id> <description>");
                         } else {
-                            taskManager.updateTask(Integer.parseInt(updateArgs[0]), updateArgs[1]);
+                            Integer id = parseId(updateArgs[0]);
+                            if (id != null) {
+                                taskManager.updateTask(id, updateArgs[1]);
+                            }
                         }
                     }
                     break;
@@ -45,21 +48,30 @@ public class TaskCLI {
                     if (commandArgs.length < 2) {
                         System.out.println("Usage: delete <id>");
                     } else {
-                        taskManager.deleteTask(Integer.parseInt(commandArgs[1]));
+                        Integer id = parseId(commandArgs[1]);
+                        if (id != null) {
+                            taskManager.deleteTask(id);
+                        }
                     }
                     break;
                 case "mark-in-progress":
                     if (commandArgs.length < 2) {
                         System.out.println("Usage: mark-in-progress <id>");
                     } else {
-                        taskManager.markTask(Integer.parseInt(commandArgs[1]), "in-progress");
+                        Integer id = parseId(commandArgs[1]);
+                        if (id != null) {
+                            taskManager.markTask(id, "in-progress");
+                        }
                     }
                     break;
                 case "mark-done":
                     if (commandArgs.length < 2) {
                         System.out.println("Usage: mark-done <id>");
                     } else {
-                        taskManager.markTask(Integer.parseInt(commandArgs[1]), "done");
+                        Integer id = parseId(commandArgs[1]);
+                        if (id != null) {
+                            taskManager.markTask(id, "done");
+                        }
                     }
                     break;
                 case "list":
@@ -88,6 +100,15 @@ public class TaskCLI {
                     System.out.println("Unknown command: " + command);
                     break;
             }
+        }
+    }
+
+    private static Integer parseId(String raw) {
+        try {
+            return Integer.parseInt(raw.trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Task ID must be a number, got: " + raw);
+            return null;
         }
     }
 }
