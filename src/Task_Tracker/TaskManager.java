@@ -46,9 +46,9 @@ public class TaskManager {
 
     public void addTask(String description) {
         int id = tasks.stream()
-                .mapToInt(Task::getId)
-                .max()
-                .orElse(0) + 1;
+        .mapToInt(Task::getId)
+        .max()
+        .orElse(0) + 1;
         Task task = new Task(id, description);
         tasks.add(task);
         saveTasks();
