@@ -1,6 +1,7 @@
 package Task_Tracker;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class TaskManager {
     private List<Task> loadTasks() {
         try {
             if (Files.exists(Paths.get(FILE_PATH))) {
-                String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
+                String json = Files.readString(Paths.get(FILE_PATH), StandardCharsets.UTF_8);
                 return gson.fromJson(json, new TypeToken<List<Task>>(){}.getType());
             }
         } catch (IOException e) {
@@ -37,7 +38,7 @@ public class TaskManager {
     private void saveTasks() {
         try {
             String json = gson.toJson(tasks);
-            Files.write(Paths.get(FILE_PATH), json.getBytes());
+            Files.writeString(Paths.get(FILE_PATH), json, StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,7 +69,11 @@ public class TaskManager {
     }
 
     public void deleteTask(int id) {
-        tasks.removeIf(task -> task.getId() == id);
+        boolean removed = tasks.removeIf(task -> task.getId() == id);
+        if (!removed) {
+            System.out.println("Task not found (ID: " + id + ")");
+            return;
+        }
         saveTasks();
         System.out.println("Task deleted successfully (ID: " + id + ")");
     }
